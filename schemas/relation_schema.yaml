@@ -1,0 +1,117 @@
+schema_version: 0.1.0
+required:
+- id
+- from
+- relation
+- to
+- evidence
+- review_status
+- created
+review_status:
+- pending
+- approved
+- rejected
+relations:
+  HAS_GOAL:
+    source_types:
+    - PERSON
+    target_types:
+    - GOAL
+    meaning: 本人明确目标
+  KNOWS:
+    source_types:
+    - PERSON
+    target_types:
+    - CONCEPT
+    meaning: 已经验证理解或掌握
+  HAS_SKILL:
+    source_types:
+    - PERSON
+    target_types:
+    - SKILL
+    meaning: 有实践证据的能力
+  REQUIRES:
+    source_types:
+    - PROJECT
+    - GOAL
+    - SKILL
+    target_types:
+    - CONCEPT
+    - SKILL
+    meaning: 依赖或所需条件
+  PREREQUISITE_OF:
+    source_types:
+    - CONCEPT
+    - SKILL
+    target_types:
+    - CONCEPT
+    - SKILL
+    meaning: 先修知识
+  APPLIES:
+    source_types:
+    - PROJECT
+    - EXPERIENCE
+    target_types:
+    - CONCEPT
+    - SKILL
+    meaning: 项目或经历中实际应用
+  PART_OF:
+    source_types:
+    - CONCEPT
+    - SKILL
+    - PROJECT
+    target_types:
+    - CONCEPT
+    - SKILL
+    - PROJECT
+    meaning: 层级从子到父
+  DERIVED_FROM:
+    source_types:
+    - CONCEPT
+    - BELIEF
+    - DECISION
+    - EXPERIENCE
+    target_types:
+    - SOURCE
+    - EXPERIENCE
+    - CONCEPT
+    meaning: 信息依据来源
+  SUPPORTS:
+    source_types:
+    - SOURCE
+    - EXPERIENCE
+    - CONCEPT
+    target_types:
+    - BELIEF
+    - DECISION
+    - CONCEPT
+    meaning: 提供支持但不必然证明
+  CONTRADICTS:
+    source_types:
+    - BELIEF
+    - CONCEPT
+    - SOURCE
+    target_types:
+    - BELIEF
+    - CONCEPT
+    - SOURCE
+    meaning: 互相冲突的主张
+  MOTIVATED_BY:
+    source_types:
+    - DECISION
+    - PROJECT
+    target_types:
+    - GOAL
+    - BELIEF
+    - EXPERIENCE
+    meaning: 行动动机
+  REVISED_BY:
+    source_types:
+    - BELIEF
+    - DECISION
+    - CONCEPT
+    target_types:
+    - BELIEF
+    - DECISION
+    - CONCEPT
+    meaning: 旧版本指向新版本

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "REL-20261101-001",
+    "from": "KNW-20261101-001",
+    "relation": "DERIVED_FROM",
+    "to": "SRC-20261101-001",
+    "evidence": [
+      {
+        "source_id": "SRC-20261101-001",
+        "locator": "第 1 节"
+      }
+    ],
+    "review_status": "approved",
+    "created": "2026-11-01"
+  },
+  {
+    "id": "REL-20261101-002",
+    "from": "PRJ-20261101-001",
+    "relation": "REQUIRES",
+    "to": "KNW-20261101-001",
+    "evidence": [
+      {
+        "source_id": "SRC-20261101-001",
+        "locator": "第 1 节"
+      }
+    ],
+    "review_status": "pending",
+    "created": "2026-11-01"
+  }
+]

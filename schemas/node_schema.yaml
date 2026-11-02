@@ -1,0 +1,62 @@
+schema_version: 0.1.0
+id_format: PREFIX-YYYYMMDD-NNN
+node_types:
+  PERSON:
+    prefix: IDN
+    description: 个人主体
+  GOAL:
+    prefix: GOL
+    description: 目标
+  CONCEPT:
+    prefix: KNW
+    description: 知识概念
+  SKILL:
+    prefix: SKL
+    description: 可验证能力
+  PROJECT:
+    prefix: PRJ
+    description: 项目
+  EXPERIENCE:
+    prefix: EXP
+    description: 经验事件
+  BELIEF:
+    prefix: BLF
+    description: 个人观点或原则
+  DECISION:
+    prefix: DEC
+    description: 一次决策
+  SOURCE:
+    prefix: SRC
+    description: 来源文献或原始资料
+required:
+- id
+- type
+- title
+- created
+- updated
+- status
+- knowledge_space
+- privacy
+- source_ids
+status:
+- observed
+- verified
+- external
+- hypothesized
+- disputed
+- obsolete
+knowledge_space:
+- current
+- external
+- hypothetical
+privacy:
+- private
+- sensitive
+- shareable
+- public
+learning_status:
+- planned
+- reading
+- understood
+- applied
+- mastered
