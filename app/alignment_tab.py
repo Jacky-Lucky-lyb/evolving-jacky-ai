@@ -64,8 +64,7 @@ def render(api, nodes, sources, proposals):
             st.caption('V0.2.4 不执行跨表合并或自动更新证据，正式复用审批需待 v0.2.5 的原子写入实现。')
             if st.button('拒绝这项复用建议',key='reject_merge_'+str(m['id'])):
                 try:
-                    updated=api.update('review_queue',m['id'],{'status':'rejected','reviewed_at':datetime.now(timezone.utc).isoformat()}, {'status':'eq.pending'})
-                    if not updated: raise RuntimeError('审核记录未更新；请刷新')
+                    api.rpc('reject_merge_proposal', {'p_merge_id':str(m['id'])})
                     st.rerun()
                 except Exception as ex: st.error(str(ex))
     st.caption('请勿将手工录入的个人掌握状态与 external 资料合并。')

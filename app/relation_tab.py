@@ -29,19 +29,12 @@ def render(api,nodes,sources,proposals):
                 submitted=st.form_submit_button('保存审核')
             if submitted:
                 try:
-                    if action=='批准关系':
-                        if frm not in label or to not in label:raise ValueError('关联节点不存在，请先处理节点')
-                        if not note.strip():raise ValueError('必须填写依据')
-                        if (frm,rtype,to) in {(e['from_node_id'],e['relation_type'],e['to_node_id']) for e in existing}:
-                            raise ValueError('正式图谱已经存在同一关系')
-                        edge=clean_edge(frm,rtype,to,p.get('source_ref'),note)
-                        api.create('knowledge_edges',edge)
-                        status='approved'
-                    elif action=='拒绝':status='rejected'
-                    else:status='pending'
-                    if status!='pending':
-                        updated=api.update('review_queue',p['id'],{'status':status,'reviewed_at':datetime.now(timezone.utc).isoformat()}, {'status':'eq.pending'})
-                        if not updated:st.warning('关系可能已保存，但审核状态未确认；请刷新并检查，勿重复批准')
+                    if action!='保持待审':
+                        if action=='批准关系' and not note.strip():raise ValueError('必须填写依据')
+                        api.rpc('review_edge_proposal', {
+                            'p_review_id':str(p['id']),
+                            'p_action':'approve' if action=='批准关系' else 'reject',
+                            'p_relation_type':rtype,'p_note':note})
                     st.success('操作完成');st.rerun()
                 except Exception as ex:st.error(str(ex))
     st.divider()

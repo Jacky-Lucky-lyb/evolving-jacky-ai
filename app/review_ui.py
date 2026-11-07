@@ -53,45 +53,8 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "来源证据/安全复用"
 ])
 with tab1:
-    node_proposals=[p for p in proposals if p['proposal_type']=='node']
-    st.write(f'待审核节点：**{len(node_proposals)}**（只展示最新 100 条待审记录）')
-    for p in node_proposals:
-        payload=p.get('payload') or {}
-        with st.expander(f"{payload.get('title','未命名')} · {p['id'][:8]}"):
-            source_id=p.get('source_ref') or payload.get('source_id')
-            st.caption('资料来源：'+source_names.get(source_id,source_id or '未知'))
-            evidence=payload.get('evidence_quote','')
-            st.write('原文证据：',evidence or '（未提供）')
-            with st.form('review_'+p['id']):
-                title=st.text_input('节点标题',value=payload.get('title',''),key='title_'+p['id'])
-                type_default=payload.get('node_type','CONCEPT')
-                ntype=st.selectbox('节点类型',NODE_TYPES,index=NODE_TYPES.index(type_default) if type_default in NODE_TYPES else 2,key='type_'+p['id'])
-                space=st.selectbox('知识空间',NODE_SPACES,index=1,key='space_'+p['id'],help='导入资料默认 external；不能自动认定本人掌握')
-                status_options=['external','hypothesized','observed','verified','disputed','obsolete']
-                status=st.selectbox('知识状态',status_options,key='status_'+p['id'],help='选择与知识空间一致的状态：external 对应 external；hypothetical 对应 hypothesized')
-                note=st.text_area('审核依据 / 说明',value=payload.get('rationale',''),key='note_'+p['id'])
-                matches=potential_duplicates(title,nodes)
-                if matches:
-                    st.warning('可能重复：'+ '；'.join(f"{m['title']} ({score:.0%})" for score,m in matches))
-                    st.caption('请先核对已有节点：本版不会自动合并。若重复请拒绝并保留理由。')
-                action=st.radio('决定',['保持待审','批准新节点','拒绝','标记需要修改'],horizontal=True,key='action_'+p['id'])
-                confirm=st.form_submit_button('保存此项审核')
-            if confirm:
-                try:
-                    if action=='批准新节点':
-                        if matches:raise ValueError('存在疑似重复节点，请先人工核查；当前不允许直接批准重复项')
-                        data=clean_node(ntype,title,status,space,source_id,evidence,note)
-                        api.create('knowledge_nodes',data)
-                        new_status='approved'
-                    elif action=='拒绝':new_status='rejected'
-                    elif action=='标记需要修改':new_status='needs_revision'
-                    else:new_status='pending'
-                    if new_status!='pending':
-                        api.update('review_queue',p['id'],{'status':new_status,'reviewed_at':datetime.now(timezone.utc).isoformat()}, {'status':'eq.pending'})
-                        try:api.create('change_events',{'event_type':'review_node_'+new_status,'entity_id':data['id'] if action=='批准新节点' else str(p['id']), 'payload':{'proposal_id':str(p['id']),'title':title,'source_id':source_id}})
-                        except Exception:st.warning('审核状态已保存，但审计事件写入失败，请记录此次操作并检查配置')
-                    st.success('审核完成');st.rerun()
-                except Exception as ex:st.error('未完成：'+str(ex))
+    from guarded_node_tab import render as render_guarded_nodes
+    render_guarded_nodes(api, proposals, nodes, sources)
 
 with tab2:
     st.info('V0.2.2 当前提供人工提出关系候选；AI 关系自动发现与合并建议将在后续迭代加入。')

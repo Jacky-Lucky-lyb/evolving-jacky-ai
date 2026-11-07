@@ -47,7 +47,7 @@ class Api:
         return self._req('/rest/v1/'+table,'DELETE',params={'id':'eq.'+identifier})
     
     def rpc(self, function_name, payload):
-        if function_name != "approve_node_reuse":
+        if function_name not in ("approve_node_reuse", "review_node_proposal", "reject_merge_proposal", "review_edge_proposal"):
             raise ValueError(
                 "RPC function is not approved for this client"
             )
