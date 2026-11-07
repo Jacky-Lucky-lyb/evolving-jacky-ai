@@ -45,3 +45,15 @@ class Api:
 
     def delete(self,table,identifier):
         return self._req('/rest/v1/'+table,'DELETE',params={'id':'eq.'+identifier})
+    
+    def rpc(self, function_name, payload):
+        if function_name != "approve_node_reuse":
+            raise ValueError(
+                "RPC function is not approved for this client"
+            )
+        return self._req(
+            "/rest/v1/rpc/" + function_name,
+            "POST",
+            payload
+        )
+

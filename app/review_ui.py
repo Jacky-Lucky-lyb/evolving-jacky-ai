@@ -43,7 +43,15 @@ except Exception as ex:
     st.error('读取失败：'+str(ex));st.stop()
 source_names={s['id']:s['title'] for s in sources}
 
-tab1,tab2,tab3,tab4=st.tabs(['候选节点审核','人工创建候选关系','当前图谱','自动关系发现'])
+
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "候选节点审核",
+    "人工创建候选关系",
+    "当前图谱",
+    "自动关系发现",
+    "语义匹配/去重",
+    "来源证据/安全复用"
+])
 with tab1:
     node_proposals=[p for p in proposals if p['proposal_type']=='node']
     st.write(f'待审核节点：**{len(node_proposals)}**（只展示最新 100 条待审记录）')
@@ -121,3 +129,18 @@ st.caption('限制：当前不做自动 Git 同步、自动关系发现、批量
 with tab4:
     from relation_tab import render
     render(api,nodes,sources,proposals)
+
+with tab5:
+    from alignment_tab import render as render_alignment
+    render_alignment(api,nodes,sources,proposals)
+
+with tab6:
+    from evidence_merge_tab import render as render_evidence_merge
+
+    render_evidence_merge(
+        api,
+        nodes,
+        sources,
+        proposals
+    )
+
